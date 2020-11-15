@@ -14,7 +14,7 @@ Make ca-certificates.crt daily via GitHub Actions
 ## Update ca-certificates.crt with a script
 
 ```shell
-curl -fsSL git.io/ca-certificates.sh | bash
+curl -fsSL git.io/JksyL | bash
 ```
 
 ## Licence

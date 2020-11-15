@@ -9,6 +9,7 @@ name: Publish ca-certificates.crt
 
 on:
   repository_dispatch:
+  workflow_dispatch:
   schedule:
     - cron: 0 22 * * *
 

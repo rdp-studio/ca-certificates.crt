@@ -1,0 +1,40 @@
+#=================================================
+# https://github.com/rdp-studio/ca-certificates.crt
+# Description: Publish ca-certificates.crt
+# Lisence: MIT
+# Author: rdp-studio
+#=================================================
+
+name: Publish ca-certificates.crt
+
+on:
+  repository_dispatch:
+  schedule:
+    - cron: 0 22 * * *
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+    - name: Make ca-certificates.crt
+      run: |
+        wget -N https://raw.githubusercontent.com/curl/curl/master/lib/mk-ca-bundle.pl
+        chmod +x mk-ca-bundle.pl
+        ./mk-ca-bundle.pl
+        mkdir -p upload
+        cp -v ca-bundle.crt upload/ca-certificates.crt
+
+    - name: Push to "download" branch
+      run: |
+        cd upload
+        echo $(sha256sum *) > sha256sum
+        git init
+        git config user.name "${{ github.actor }}"
+        git config user.email "${{ github.actor }}@users.noreply.github.com"
+        git checkout -b download
+        git add .
+        git commit -m "$(date +"%Y.%m.%d")"
+        git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
+        git push -f origin download
